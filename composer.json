@@ -1,0 +1,20 @@
+{
+    "name": "magehx/htmx-actions",
+    "description": "Magento 2 module that provides a base controller to manage HTMX requests.",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "magento/framework": "*"
+    },
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "MageHx\\HtmxActions\\": "src/"
+        }
+    }
+}
