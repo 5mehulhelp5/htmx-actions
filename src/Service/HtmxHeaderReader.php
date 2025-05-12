@@ -30,6 +30,16 @@ class HtmxHeaderReader
         return $this->getRequestHeader(HtmxRequestHeader::CURRENT_URL) ?? '';
     }
 
+    public function getTriggerName(): string
+    {
+        return $this->getRequestHeader(HtmxRequestHeader::TRIGGER) ?? '';
+    }
+
+    public function isTriggerSameAs(string $name): bool
+    {
+        return $this->getTriggerName() === $name;
+    }
+
     public function getAllRequestHeaders(): array
     {
         $headers = [];
