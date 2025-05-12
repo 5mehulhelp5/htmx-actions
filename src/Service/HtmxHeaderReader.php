@@ -11,7 +11,7 @@ use Magento\Framework\Controller\ResultInterface;
 
 class HtmxHeaderReader
 {
-    public function __construct(private RequestInterface $request)
+    public function __construct(private readonly RequestInterface $request)
     {
     }
 
@@ -23,6 +23,11 @@ class HtmxHeaderReader
     public function getRequestHeader(HtmxRequestHeader $header): ?string
     {
         return $this->request->getHeader($header->value);
+    }
+
+    public function getOriginUrl(): string
+    {
+        return $this->getRequestHeader(HtmxRequestHeader::CURRENT_URL) ?? '';
     }
 
     public function getAllRequestHeaders(): array
@@ -40,8 +45,12 @@ class HtmxHeaderReader
         return $headers;
     }
 
-    public function setResponseHeader(ResultInterface $response, HtmxResponseHeader $header, string $value, bool $replace = true): ResultInterface
-    {
+    public function setResponseHeader(
+        ResultInterface $response,
+        HtmxResponseHeader $header,
+        string $value,
+        bool $replace = true
+    ): ResultInterface {
         return $response->setHeader($header->value, $value, $replace);
     }
 
@@ -54,5 +63,10 @@ class HtmxHeaderReader
         }
 
         return $response;
+    }
+
+    public function setResponsePushUrl(ResultInterface $response, string $value, bool $replace = true): ResultInterface
+    {
+        return $this->setResponseHeader($response, HtmxResponseHeader::PUSH_URL, $value, $replace);
     }
 }
