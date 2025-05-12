@@ -25,6 +25,11 @@ enum HtmxResponseHeader: string
      */
     case REFRESH = 'HX-Refresh';
 
+    /*
+     * Allows you to specify how the response will be swapped.
+     */
+    case RESWAP = 'HX-Reswap';
+
     /**
      * Change the target DOM element for the current swap
      */
