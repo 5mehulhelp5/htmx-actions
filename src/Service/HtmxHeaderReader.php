@@ -32,7 +32,7 @@ class HtmxHeaderReader
 
     public function getTriggerName(): string
     {
-        return $this->getRequestHeader(HtmxRequestHeader::TRIGGER) ?? '';
+        return $this->getRequestHeader(HtmxRequestHeader::TRIGGER_NAME) ?? '';
     }
 
     public function isTriggerSameAs(string $name): bool
