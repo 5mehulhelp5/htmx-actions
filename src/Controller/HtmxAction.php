@@ -27,11 +27,14 @@ abstract class HtmxAction extends Action
         parent::__construct($context);
     }
 
-    public function getBlockResponse(?string $blockName = null, ?array $handles = null): ResultInterface
-    {
+    public function getBlockResponse(
+        ?string $blockName = null,
+        ?array $handles = null,
+        string $additionalHtml = ''
+    ): ResultInterface {
         $html = $this->getBlock($blockName ?? $this->blockName, $handles ?? $this->handles)?->toHtml() ?? '';
 
-        return $this->rawFactory->create()->setContents($html);
+        return $this->rawFactory->create()->setContents($html . $additionalHtml);
     }
 
     public function getMultiBlockResponse(array $blockNames, ?array $handles = null): ResultInterface
@@ -72,14 +75,20 @@ abstract class HtmxAction extends Action
         return $this->getBlock($blockName ?? $this->blockName, $handles ?? $this->handles)?->toHtml() ?? '';
     }
 
-    protected function getBlock(string $blockName, array $handles): ?BlockInterface
+    protected function getBlock(string $blockName, array $handles, array $data = []): ?BlockInterface
     {
         if (isset($this->blocks[$blockName])) {
             return $this->blocks[$blockName];
         }
 
         $layout = $this->loadLayoutFromHandles($handles);
-        return $this->blocks[$blockName] = $layout->getBlock($blockName);
+        $block = $layout->getBlock($blockName);
+
+        foreach ($data as $key => $value) {
+            $block->setData($key, $value);
+        }
+
+        return $this->blocks[$blockName] = $block;
     }
 
     protected function loadLayoutFromHandles($handles): LayoutInterface
