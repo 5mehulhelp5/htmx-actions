@@ -4,27 +4,28 @@ declare(strict_types=1);
 
 namespace MageHx\HtmxActions\Controller;
 
+use MageHx\HtmxActions\Controller\Context\HtmxActionContext;
+use MageHx\HtmxActions\Model\EventDispatcher;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\Controller\Result\RawFactory as ControllerResultRawFactory;
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\View\LayoutInterface;
-use Magento\Framework\View\Result\LayoutFactory;
 
 abstract class HtmxAction extends Action
 {
+    private EventDispatcher $eventDispatcher;
+
     protected string $blockName = '';
     protected array $handles = [];
     protected array $layouts = [];
     protected array $blocks = [];
 
     public function __construct(
-        Context $context,
-        private readonly LayoutFactory $layoutFactory,
-        private readonly ControllerResultRawFactory $rawFactory,
+        HtmxActionContext $context,
     ) {
-        parent::__construct($context);
+        parent::__construct($context->magentoAppActionContext);
+        $this->eventDispatcher = $context->eventDispatcher;
     }
 
     public function getBlockResponse(
@@ -32,20 +33,50 @@ abstract class HtmxAction extends Action
         ?array $handles = null,
         string $additionalHtml = ''
     ): ResultInterface {
-        $html = $this->getBlock($blockName ?? $this->blockName, $handles ?? $this->handles)?->toHtml() ?? '';
+        $beforeTransport = $this->eventDispatcher->dispatchBlockResponseBefore([
+            'block_name' => $blockName ?? $this->blockName,
+            'handles' => $handles ?? $this->handles,
+            'additional_html' => $additionalHtml,
+            'full_action_name' => $this->getRequest()->getFullActionName(),
+        ]);
 
-        return $this->rawFactory->create()->setContents($html . $additionalHtml);
+        $blockName = $beforeTransport->getData('block_name');
+        $handles = $beforeTransport->getData('handles');
+        $html = $this->getBlock($blockName, $handles)?->toHtml() ?? '';
+        $response = $this->rawFactory->create()->setContents($html . $additionalHtml);
+
+        $afterTransport = $this->eventDispatcher->dispatchBlockResponseAfter([
+            'response' => $response,
+            'full_action_name' => $this->getRequest()->getFullActionName(),
+        ]);
+
+        return $afterTransport->getData('response');
     }
 
     public function getMultiBlockResponse(array $blockNames, ?array $handles = null): ResultInterface
     {
+        $beforeTransport = $this->eventDispatcher->dispatchMultiBlockResponseBefore([
+            'block_names' => $blockNames,
+            'handles' => $handles,
+            'full_action_name' => $this->getRequest()->getFullActionName(),
+        ]);
+
         $html = '';
+        $blockNames = $beforeTransport->getData('block_names');
+        $handles = $beforeTransport->getData('handles');
 
         foreach ($blockNames as $blockName) {
             $html .= $this->renderBlockToHtml($blockName, $handles);
         }
 
-        return $this->rawFactory->create()->setContents($html);
+        $response = $this->rawFactory->create()->setContents($html);
+
+        $afterTransport = $this->eventDispatcher->dispatchMultiBlockResponseAfter([
+            'response' => $response,
+            'full_action_name' => $this->getRequest()->getFullActionName(),
+        ]);
+
+        return $afterTransport->getData('response');
     }
 
     public function getEmptyResponse(): ResultInterface
