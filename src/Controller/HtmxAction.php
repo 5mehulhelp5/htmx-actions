@@ -11,6 +11,7 @@ use Magento\Framework\Controller\Result\RawFactory as ControllerResultRawFactory
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Element\BlockInterface;
 use Magento\Framework\View\LayoutInterface;
+use Magento\Framework\View\Result\LayoutFactory;
 
 abstract class HtmxAction extends Action
 {
@@ -20,12 +21,16 @@ abstract class HtmxAction extends Action
     protected array $handles = [];
     protected array $layouts = [];
     protected array $blocks = [];
+    private LayoutFactory $layoutFactory;
+    private ControllerResultRawFactory $rawFactory;
 
     public function __construct(
         HtmxActionContext $context,
     ) {
         parent::__construct($context->magentoAppActionContext);
         $this->eventDispatcher = $context->eventDispatcher;
+        $this->layoutFactory = $context->layoutFactory;
+        $this->rawFactory = $context->rawFactory;
     }
 
     public function getBlockResponse(
