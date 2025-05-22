@@ -33,7 +33,7 @@ class EventDispatcher
     public function dispatchMultiBlockResponseBefore(array $eventData): DataObject
     {
         $transport =  new DataObject($eventData);
-        $this->eventManager->dispatch('hxactions_multi_blocks_response_befpre', ['transport' => $transport]);
+        $this->eventManager->dispatch('hxactions_multi_blocks_response_before', ['transport' => $transport]);
 
         return $transport;
     }
