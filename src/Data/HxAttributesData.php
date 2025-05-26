@@ -14,6 +14,7 @@ class HxAttributesData extends Data
         public ?string $target = null,
         public ?string $swap = null,
         public ?string $indicator = null,
+        public ?string $trigger =  null,
         public ?array $on = [],
     ) {
     }
