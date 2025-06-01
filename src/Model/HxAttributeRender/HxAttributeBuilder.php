@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\HtmxActions\Model\HxAttributeRender;
 
 use MageHx\HtmxActions\Enums\HtmxCoreAttributes;
+use MageHx\HtmxActions\Enums\HtmxSwapOption;
 use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
 
 /**
@@ -61,7 +62,7 @@ class HxAttributeBuilder
     /**
      * Set the `hx-swap` attribute.
      */
-    public function swap(string $strategy): self
+    public function swap(HtmxSwapOption $strategy): self
     {
         $this->attributes[HtmxCoreAttributes::swap->name] = $strategy;
         return $this;

@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace MageHx\HtmxActions\Model\HxAttributeRender;
 
+use MageHx\HtmxActions\Data\HxAttributesData;
 use MageHx\HtmxActions\Data\MageUrlData;
 use MageHx\HtmxActions\Enums\HtmxAdditionalAttributes;
 use MageHx\HtmxActions\Enums\HtmxCoreAttributes;
-use MageHx\MahxCheckout\Data\CheckoutHxAttributesData;
 use Magento\Framework\Escaper;
+use Magento\Framework\Serialize\Serializer\Json as JsonSerializer;
 use Magento\Framework\UrlInterface;
 
 class HxAttributesRenderer
@@ -16,6 +17,7 @@ class HxAttributesRenderer
     public function __construct(
         private readonly Escaper $escaper,
         private readonly UrlInterface $urlBuilder,
+        private readonly JsonSerializer $jsonSerializer,
     ) {
     }
 
@@ -25,39 +27,49 @@ class HxAttributesRenderer
      */
     public function render(array $hxAttributes): string
     {
-        $hxAttributesData = CheckoutHxAttributesData::from($hxAttributes);
-        $nonNullAttributes = array_filter(get_object_vars($hxAttributesData), fn ($value) => $value !== null);
-
         $attributesHtml = '';
 
-        foreach ($nonNullAttributes as $attribute => $value) {
-            if ($attribute === HtmxCoreAttributes::on->name && is_array($value)) {
-                // Render each event binding as hx-on:event="handler"
-                foreach ($value as $event => $handler) {
-                    $eventAttr = "hx-on:$event";
-                    $eventValue = $this->escaper->escapeHtmlAttr($handler);
-                    $attributesHtml .= " {$eventAttr}=\"{$eventValue}\"";
-                }
-            } else {
-                $hxAttribute = $this->resolveHxAttribute($attribute);
-                $resolvedValue = $this->resolveValue($attribute, $value);
-                $attributesHtml .= " {$hxAttribute}=\"{$resolvedValue}\"";
-            }
+        foreach ($this->toArray($hxAttributes) as $hxAttribute => $hxAttributeValue) {
+            $attributesHtml .= " {$hxAttribute}=\"{$hxAttributeValue}\"";
         }
 
         return trim($attributesHtml);
     }
 
+    public function toArray(array $hxAttributes): array
+    {
+        $hxAttributesData = HxAttributesData::from($hxAttributes);
+        $nonNullAttributes = array_filter(get_object_vars($hxAttributesData), fn ($value) => $value !== null);
+
+        $attributesArray = [];
+
+        foreach ($nonNullAttributes as $attribute => $value) {
+            if ($attribute === HtmxCoreAttributes::on->name) {
+                // Render each event binding as hx-on:event="handler"
+                foreach ($value as $event => $handler) {
+                    $attributesArray["hx-on:{$event}"] = $handler;
+                }
+            } else {
+                $hxAttribute = $this->resolveHxAttribute($attribute);
+                $attributesArray[$hxAttribute] = $this->resolveValue($attribute, $value);
+            }
+        }
+
+        return $attributesArray;
+    }
+
     /**
      * Resolves the proper value for a given HTMX attribute.
-     * For URLs, uses Magento's URL builder. Otherwise escapes the value for safe HTML output.
+     * For URLs, uses Magento's URL builder. Otherwise, escapes the value for safe HTML output.
      */
     private function resolveValue(string $attribute, mixed $value): string
     {
         return match ($attribute) {
             HtmxCoreAttributes::get->name,
             HtmxCoreAttributes::post->name => $this->resolveUrlValue($value),
-            default => $this->escaper->escapeHtmlAttr((string) $value),
+            HtmxCoreAttributes::swap->name => $value->value,
+            HtmxCoreAttributes::vals->name => $this->escaper->escapeHtmlAttr($this->jsonSerializer->serialize($value)),
+            default => $value,
         };
     }
 

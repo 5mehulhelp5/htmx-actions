@@ -13,40 +13,40 @@ enum HtmxSwapOption: string
     /**
      * Replaces the entire content of the target element.
      */
-    case INNER_HTML = 'innerHTML';
+    case innerHTML = 'innerHTML';
 
     /**
      * Replaces the target element itself.
      */
-    case OUTER_HTML = 'outerHTML';
+    case outerHTML = 'outerHTML';
 
     /**
      * Appends the response content inside the target element.
      */
-    case BEFORE_END = 'beforeend';
+    case beforeEnd = 'beforeend';
 
     /**
      * Prepends the response content inside the target element.
      */
-    case AFTER_BEGIN = 'afterbegin';
+    case afterBegin = 'afterbegin';
 
     /**
      * Inserts the response content just before the target element.
      */
-    case BEFORE_BEGIN = 'beforebegin';
+    case beforeBegin = 'beforebegin';
 
     /**
      * Inserts the response content just after the target element.
      */
-    case AFTER_END = 'afterend';
+    case afterEnd = 'afterend';
 
     /**
      * Does not swap the content at all.
      */
-    case NONE = 'none';
+    case none = 'none';
 
     /**
      * A custom swap strategy defined in JavaScript.
      */
-    case CUSTOM = 'custom';
+    case custom = 'custom';
 }

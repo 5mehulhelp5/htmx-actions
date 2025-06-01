@@ -12,4 +12,6 @@ enum HtmxCoreAttributes: string
     case target = 'hx-target';
     case trigger = 'hx-trigger';
     case on = 'hx-on';
+    case swapOob = 'hx-swap-oob';
+    case vals = 'hx-vals';
 }

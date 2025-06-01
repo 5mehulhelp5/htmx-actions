@@ -7,4 +7,5 @@ namespace MageHx\HtmxActions\Enums;
 enum HtmxAdditionalAttributes: string
 {
     case indicator = 'hx-indicator';
+    case include = 'hx-include';
 }
