@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MageHx\HtmxActions\Model\HxAttributeRender;
 
+use MageHx\HtmxActions\Enums\HtmxAdditionalAttributes;
 use MageHx\HtmxActions\Enums\HtmxCoreAttributes;
 use MageHx\HtmxActions\Enums\HtmxSwapOption;
 use MageHx\HtmxActions\ViewModel\HxAttributesRenderer;
@@ -59,12 +60,30 @@ class HxAttributeBuilder
         return $this;
     }
 
+    public function targetThis(): self
+    {
+        $this->target('this');
+        return $this;
+    }
+
     /**
      * Set the `hx-swap` attribute.
      */
     public function swap(HtmxSwapOption $strategy): self
     {
         $this->attributes[HtmxCoreAttributes::swap->name] = $strategy;
+        return $this;
+    }
+
+    public function swapOuterHTML(): self
+    {
+        $this->swap(HtmxSwapOption::outerHTML);
+        return $this;
+    }
+
+    public function swapInnerHTML(): self
+    {
+        $this->swap(HtmxSwapOption::innerHTML);
         return $this;
     }
 
@@ -83,6 +102,24 @@ class HxAttributeBuilder
     public function on(string $event, string $handler): self
     {
         $this->attributes[HtmxCoreAttributes::on->name][$event] = $handler;
+        return $this;
+    }
+
+    public function indicator(string $indicator): self
+    {
+        $this->attributes[HtmxAdditionalAttributes::indicator->name] = $indicator;
+        return $this;
+    }
+
+    public function include(string|array $include): self
+    {
+        $includeArray = $include;
+
+        if (is_string($include)) {
+            $includeArray = explode(',', $include);
+        }
+
+        $this->attributes[HtmxAdditionalAttributes::include->name] = $includeArray;
         return $this;
     }
 

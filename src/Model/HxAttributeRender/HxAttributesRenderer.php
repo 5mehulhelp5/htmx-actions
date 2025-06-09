@@ -69,6 +69,7 @@ class HxAttributesRenderer
             HtmxCoreAttributes::post->name => $this->resolveUrlValue($value),
             HtmxCoreAttributes::swap->name => $value->value,
             HtmxCoreAttributes::vals->name => $this->escaper->escapeHtmlAttr($this->jsonSerializer->serialize($value)),
+            HtmxAdditionalAttributes::include->name => implode(',', $value),
             default => $value,
         };
     }

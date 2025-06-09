@@ -44,6 +44,11 @@ trait ShorthandHxAttributesRenderers
         return $this->renderer->render([HtmxCoreAttributes::target->name => $selector]);
     }
 
+    public function targetThis(): string
+    {
+        return $this->renderer->render([HtmxCoreAttributes::target->name => 'this']);
+    }
+
     /**
      * Renders `hx-swap="strategy"`
      */
@@ -66,6 +71,17 @@ trait ShorthandHxAttributesRenderers
     public function indicator(string $selector): string
     {
         return $this->renderer->render([HtmxAdditionalAttributes::indicator->name => $selector]);
+    }
+
+    public function include(string|array $include): string
+    {
+        $includeArray = $include;
+
+        if (is_string($include)) {
+            $includeArray = explode(',', $include);
+        }
+
+        return $this->renderer->render([HtmxAdditionalAttributes::include->name => $includeArray]);
     }
 
     /**

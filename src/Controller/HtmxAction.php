@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace MageHx\HtmxActions\Controller;
 
 use MageHx\HtmxActions\Controller\Context\HtmxActionContext;
+use MageHx\HtmxActions\Controller\Result\HtmxRawFactory as HtmxResultRawFactory;
 use MageHx\HtmxActions\Model\EventDispatcher;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\Controller\Result\RawFactory as ControllerResultRawFactory;
@@ -22,7 +23,7 @@ abstract class HtmxAction extends Action
     protected array $layouts = [];
     protected array $blocks = [];
     private LayoutFactory $layoutFactory;
-    private ControllerResultRawFactory $rawFactory;
+    private HtmxResultRawFactory $rawFactory;
 
     public function __construct(
         HtmxActionContext $context,
@@ -48,6 +49,7 @@ abstract class HtmxAction extends Action
         $blockName = $beforeTransport->getData('block_name');
         $handles = $beforeTransport->getData('handles');
         $html = $this->getBlock($blockName, $handles)?->toHtml() ?? '';
+        $additionalHtml = $beforeTransport->getData('additional_html');
         $response = $this->rawFactory->create()->setContents($html . $additionalHtml);
 
         $afterTransport = $this->eventDispatcher->dispatchBlockResponseAfter([
