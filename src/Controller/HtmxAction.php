@@ -64,7 +64,7 @@ abstract class HtmxAction extends Action
     {
         $beforeTransport = $this->eventDispatcher->dispatchMultiBlockResponseBefore([
             'block_names' => $blockNames,
-            'handles' => $handles,
+            'handles' => $handles ?? $this->handles,
             'full_action_name' => $this->getRequest()->getFullActionName(),
         ]);
 

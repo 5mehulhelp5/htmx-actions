@@ -123,6 +123,21 @@ class HxAttributeBuilder
         return $this;
     }
 
+    public function vals(array $values): self
+    {
+        $this->attributes[HtmxCoreAttributes::vals->name] = $values;
+        return $this;
+    }
+
+    public function when(bool $condition, callable $callback): self
+    {
+        if ($condition) {
+            $callback($this);
+        }
+
+        return $this;
+    }
+
     /**
      * Render the built attributes into a string using the configured renderer.
      */

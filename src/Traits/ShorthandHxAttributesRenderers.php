@@ -6,6 +6,7 @@ namespace MageHx\HtmxActions\Traits;
 
 use MageHx\HtmxActions\Enums\HtmxAdditionalAttributes;
 use MageHx\HtmxActions\Enums\HtmxCoreAttributes;
+use MageHx\HtmxActions\Enums\HtmxSwapOption;
 use MageHx\HtmxActions\Model\HxAttributeRender\HxAttributesRenderer;
 
 /**
@@ -57,6 +58,16 @@ trait ShorthandHxAttributesRenderers
         return $this->renderer->render([HtmxCoreAttributes::swap->name => $strategy]);
     }
 
+    public function swapOuterHTML(): string
+    {
+        return $this->renderer->render([HtmxCoreAttributes::swap->name => HtmxSwapOption::outerHTML]);
+    }
+
+    public function swapInnerHTML(): string
+    {
+        return $this->renderer->render([HtmxCoreAttributes::swap->name => HtmxSwapOption::innerHTML]);
+    }
+
     /**
      * Renders `hx-trigger="event"`
      */
@@ -82,6 +93,11 @@ trait ShorthandHxAttributesRenderers
         }
 
         return $this->renderer->render([HtmxAdditionalAttributes::include->name => $includeArray]);
+    }
+
+    public function vals(array $values): string
+    {
+        return $this->renderer->render([HtmxCoreAttributes::vals->name => $values]);
     }
 
     /**
