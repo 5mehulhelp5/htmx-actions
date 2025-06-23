@@ -87,6 +87,12 @@ class HxAttributeBuilder
         return $this;
     }
 
+    public function swapNone(): self
+    {
+        $this->swap(HtmxSwapOption::none);
+        return $this;
+    }
+
     /**
      * Set the `hx-trigger` attribute.
      */

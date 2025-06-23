@@ -68,6 +68,12 @@ trait ShorthandHxAttributesRenderers
         return $this->renderer->render([HtmxCoreAttributes::swap->name => HtmxSwapOption::innerHTML]);
     }
 
+    public function swapNone(): string
+    {
+        return $this->renderer->render([HtmxCoreAttributes::swap->name => HtmxSwapOption::none]);
+    }
+
+
     /**
      * Renders `hx-trigger="event"`
      */
