@@ -93,6 +93,12 @@ class HxAttributeBuilder
         return $this;
     }
 
+    public function validate(): self
+    {
+        $this->attributes[HtmxAdditionalAttributes::validate->name] = true;
+        return $this;
+    }
+
     /**
      * Set the `hx-trigger` attribute.
      */

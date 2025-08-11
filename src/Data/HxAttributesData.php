@@ -16,10 +16,11 @@ class HxAttributesData extends Data
         public ?HtmxSwapOption $swap = null,
         public ?string $indicator = null,
         public ?string $trigger =  null,
-        public ?string $swapOob = null,
+        public ?bool $swapOOB = null,
         public ?array $include = null,
         public ?array $vals = null,
         public ?array $on = null,
+        public ?bool $validate = null,
     ) {
     }
 }

@@ -30,7 +30,8 @@ class HxAttributesRenderer
         $attributesHtml = '';
 
         foreach ($this->toArray($hxAttributes) as $hxAttribute => $hxAttributeValue) {
-            $attributesHtml .= " {$hxAttribute}=\"{$hxAttributeValue}\"";
+            $value = is_bool($hxAttributeValue) ? ($hxAttributeValue ? 'true' : 'false') : $hxAttributeValue;
+            $attributesHtml .= " {$hxAttribute}=\"{$value}\"";
         }
 
         return trim($attributesHtml);
@@ -40,7 +41,6 @@ class HxAttributesRenderer
     {
         $hxAttributesData = HxAttributesData::from($hxAttributes);
         $nonNullAttributes = array_filter(get_object_vars($hxAttributesData), fn ($value) => $value !== null);
-
         $attributesArray = [];
 
         foreach ($nonNullAttributes as $attribute => $value) {
@@ -62,7 +62,7 @@ class HxAttributesRenderer
      * Resolves the proper value for a given HTMX attribute.
      * For URLs, uses Magento's URL builder. Otherwise, escapes the value for safe HTML output.
      */
-    private function resolveValue(string $attribute, mixed $value): string
+    private function resolveValue(string $attribute, mixed $value): mixed
     {
         return match ($attribute) {
             HtmxCoreAttributes::get->name,
@@ -92,10 +92,10 @@ class HxAttributesRenderer
      */
     private function resolveHxAttribute(string $attribute): string
     {
-        return 'hx-' . (
-                HtmxCoreAttributes::tryFrom($attribute)?->value
-                ?? HtmxAdditionalAttributes::tryFrom($attribute)?->value
-                ?? $attribute
-            );
+        return (
+            HtmxCoreAttributes::tryFromName($attribute)?->value
+            ?? HtmxAdditionalAttributes::tryFromName($attribute)?->value
+            ?? "hx-{$attribute}"
+        );
     }
 }

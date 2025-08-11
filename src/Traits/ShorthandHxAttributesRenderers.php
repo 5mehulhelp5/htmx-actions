@@ -113,4 +113,9 @@ trait ShorthandHxAttributesRenderers
     {
         return $this->renderer->render([HtmxCoreAttributes::on->name => [$event => $handler]]);
     }
+
+    public function swapOOB(): string
+    {
+        return $this->renderer->render([HtmxCoreAttributes::swapOOB->name => true]);
+    }
 }
