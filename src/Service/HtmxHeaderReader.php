@@ -20,19 +20,19 @@ class HtmxHeaderReader
         return $this->getRequestHeader(HtmxRequestHeader::REQUEST) === 'true';
     }
 
-    public function getRequestHeader(HtmxRequestHeader $header): ?string
+    public function getRequestHeader(HtmxRequestHeader $header): string|bool
     {
         return $this->request->getHeader($header->value);
     }
 
     public function getOriginUrl(): string
     {
-        return $this->getRequestHeader(HtmxRequestHeader::CURRENT_URL) ?? '';
+        return $this->getRequestHeader(HtmxRequestHeader::CURRENT_URL) ?: '';
     }
 
     public function getTriggerName(): string
     {
-        return $this->getRequestHeader(HtmxRequestHeader::TRIGGER_NAME) ?? '';
+        return $this->getRequestHeader(HtmxRequestHeader::TRIGGER_NAME) ?: '';
     }
 
     public function isTriggerSameAs(string $name): bool
